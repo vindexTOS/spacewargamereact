@@ -1,0 +1,29 @@
+@keyframes waveAnimation {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.alien-ship {
+  width: 40px;
+  animation: waveAnimation 1s infinite;
+}
+
+/* bullet */
+
+.falling-bullet {
+  animation: fallAnimation 2s linear infinite; /* You can adjust the animation duration */
+}
+
+@keyframes fallAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(600px); /* Adjust the distance the bullet falls */
+  }
+}
