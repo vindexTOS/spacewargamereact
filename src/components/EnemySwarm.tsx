@@ -26,20 +26,24 @@ export default function EnemySwarm() {
 
     return () => clearInterval(intervalId);
   }, []);
-
+  const [isWrap, setIsWrap] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsWrap(true);
+    }, 1000);
+  }, []);
   return (
     <div
       style={{
         display: "flex",
-        flexWrap: "wrap",
-        width: "90%",
-
+        flexWrap: isWrap ? "wrap-reverse" : "wrap",
         gap: "20px",
+        width: "60%",
         position: "relative",
       }}
     >
       {enemyArmy?.map((val, index) => (
-        <Enemy data={val} index={index} key={val.id} />
+        <Enemy key={val.id} data={val} index={index} />
       ))}
       {bulletPositions.map((position: any, index: number) => (
         <img

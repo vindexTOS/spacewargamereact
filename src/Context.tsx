@@ -15,6 +15,9 @@ type Cell = {
 
   enemyArmy: any[];
   setEnemyArmy: React.Dispatch<any[]>;
+
+  bullets: any;
+  setBullets: React.Dispatch<any>;
 };
 
 const Context = createContext<Cell | null>(null);
@@ -45,6 +48,7 @@ export const ContextProvider = ({ children }: { children: any }) => {
   }, []);
   const [enemyPosition, setEnemyPosition] = useState<any>();
   const [bulletPosition, setBulletPosition] = useState<any>();
+  const [bullets, setBullets] = useState<any>([]);
   return (
     <Context.Provider
       value={{
@@ -56,6 +60,8 @@ export const ContextProvider = ({ children }: { children: any }) => {
         setBulletPosition,
         enemyArmy,
         setEnemyArmy,
+        bullets,
+        setBullets,
       }}
     >
       {children}

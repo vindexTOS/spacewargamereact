@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import spaceCraft from "./assets/spacebattle/rocket.png";
 import Bullet from "./assets/spacebattle/bullet.png";
 import "./App.css";
 import SpaceShipt from "./components/SpaceShipt";
 import Enemy from "./components/Enemy";
 import EnemySwarm from "./components/EnemySwarm";
+import { UseMainContext } from "./Context";
 
 function App() {
   const mainDivStyle = {

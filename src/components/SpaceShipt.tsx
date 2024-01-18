@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Bullet from "../assets/spacebattle/bullet.png";
 import spaceCraft from "../assets/spacebattle/rocket.png";
 import { UseMainContext } from "../Context";
 export default function SpaceShipt() {
-  const { spaceCraftStats, setSpaceCraftStates, setBulletPosition } =
-    UseMainContext();
+  const {
+    spaceCraftStats,
+    setSpaceCraftStates,
+    setBulletPosition,
+    bullets,
+    setBullets,
+  } = UseMainContext();
   const [spaceCraftPosition, setSpaceCraftPosition] = useState({
     x: 0,
     y: 0,
   });
-
-  const [bullets, setBullets] = useState<any[]>([]);
+  const spaceCraftRef: any = useRef(null);
   const [canFire, setCanFire] = useState(true);
-
+  const bulletRef: any = useRef(null);
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       const step = 20;
@@ -45,15 +49,19 @@ export default function SpaceShipt() {
           break;
         case " ":
           if (canFire) {
-            setBullets((prev) => [
+            setBullets((prev: any) => [
               ...prev,
-              { x: spaceCraftPosition.x, y: spaceCraftPosition.y },
+              {
+                x: spaceCraftPosition.x,
+                y: spaceCraftPosition.y,
+              },
             ]);
+
             setCanFire(false);
 
             setTimeout(() => {
               setCanFire(true);
-            }, 500);
+            }, 900);
           }
           break;
         default:
@@ -70,18 +78,30 @@ export default function SpaceShipt() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setBullets((prev) =>
+      setBullets((prev: any) =>
         prev
-          .filter((bullet) => bullet.y < 2600)
-          .map((bullet) => ({
+          .filter((bullet: any) => bullet.y < 2600)
+          .map((bullet: any) => ({
             ...bullet,
-            y: bullet.y + 10,
+            y: bullet.y + 30,
           }))
       );
     }, 16);
-
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    setBulletPosition(bullets[bullets.length - 1]);
+  }, [bullets]);
+
+  const lit = () => {
+    if (bulletRef.current) {
+      const rects = bulletRef.current.getClientRects();
+
+      const rect = rects[0];
+      console.log(rect);
+    }
+  };
   const spaceCraftModel = {
     position: "absolute" as "absolute",
     width: "40px",
@@ -102,18 +122,17 @@ export default function SpaceShipt() {
         {new Array(spaceCraftStats.life)
           .fill("")
           .map((val: string, index: number) => (
-            <img src={spaceCraft} style={{ width: "60px" }} />
+            <img key={index} src={spaceCraft} style={{ width: "60px" }} />
           ))}
       </div>
-      {bullets.map((bullet, index) => {
-        setBulletPosition(bullet);
+      {bullets.map((bullet: any, index: number) => {
         return (
           <img
             key={index}
             src={Bullet}
             style={{
               position: "absolute",
-  
+
               width: "10px",
               height: "20px",
               left: bullet.x,
@@ -122,7 +141,12 @@ export default function SpaceShipt() {
           />
         );
       })}
-      <img src={spaceCraft} style={spaceCraftModel} />
+      <img
+        ref={spaceCraftRef}
+        onClick={() => lit()}
+        src={spaceCraft}
+        style={spaceCraftModel}
+      />
     </>
   );
 }

@@ -6,44 +6,60 @@ import { UseMainContext } from "../Context";
 type EnemyPropType = {
   id: number;
   live: boolean;
+  x: number;
+  y: number;
 };
 const Enemy = ({ data, index }: { data: EnemyPropType; index: number }) => {
-  const { bulletPosition, enemyArmy, setEnemyArmy } = UseMainContext();
-  let { live, id } = data;
+  const {
+    bulletPosition,
+    enemyArmy,
+    setEnemyArmy,
+    setBulletPosition,
+    setBullets,
+  } = UseMainContext();
+  let { live, id, x, y } = data;
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const divRef: any = useRef(null);
 
   useEffect(() => {
     if (divRef.current) {
-      const rect = divRef.current.getBoundingClientRect();
+      const rects = divRef.current.getClientRects();
 
-      setPosition({ x: Math.floor(rect.x), y: Math.floor(rect.y) });
+      if (rects.length > 0) {
+        const rect = rects[0];
+        setPosition({ x: Math.floor(rect.x), y: Math.floor(rect.y) });
+      }
     }
   }, []);
+
   useEffect(() => {
-    // console.log
-    const hitThreshold = 30; // You can adjust this value based on your requirements
+    const hitThreshold = 30;
     let newArr = [...enemyArmy];
-    if (bulletPosition) {
+    if (bulletPosition && bulletPosition.x) {
       const isHit =
         Math.abs(bulletPosition.x - position.x) <= hitThreshold &&
         Math.abs(bulletPosition.y - position.y) <= hitThreshold;
 
-      if (isHit) {
-        console.log("HIT");
-        //   const destroiedEnemy = enemyArmy.filter((val: any) => val.id !== id);
+      if (isHit && newArr[index].live) {
         newArr[index].live = false;
         setEnemyArmy(newArr);
-        console.log(newArr[index].live);
+        setBulletPosition({});
+        setBullets([]);
       }
     }
   }, [bulletPosition]);
+
   return (
     <div
-      onClick={() => console.log(position, bulletPosition)}
+      onClick={() => console.log(position)}
       ref={divRef}
-      style={{ position: "relative", width: "40px", height: "40px" }}
+      style={{
+        top: `${position.y}px`,
+        left: `${position.x}px`,
+        width: "40px",
+        height: "40px",
+      }}
     >
       {live && (
         <img
